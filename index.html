@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <title>My Calculator</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+      background-color: burlywood;
+    }
+
+    button {
+      width: 45px;
+      margin: 2px;
+      border-radius: 20%;
+      background-color: rgb(197, 130, 71);
+      color: whitesmoke;
+      margin-top: 10%;
+    }
+
+    #app {
+      height: 35%;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #display {
+      margin-bottom: 8%;
+      background-color:rgb(253, 248, 231)
+    }
+
+    h2 {
+      padding-top: 8%;
+      padding-left: 45%;
+      font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+      color: chocolate;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Calculator</h2>
+  <div id="app">
+    <table>
+      <tbody>
+        <tr>
+          <td colspan="4">
+            <input type="text" id="display" />
+          </td>
+        </tr>
+        <tr>
+          <td><button class="operator" onclick="operator('AC')">AC</button></td>
+          <td><button class="operator" onclick="operator('Del')">Del</button></td>
+          <td></td>
+          <td><button class="operator" id="devide" onclick="operator('/')">/</button></td>
+        </tr>
+        <tr>
+          <td><button id="num7" onclick="number(7)">7</button></td>
+          <td><button id="num8" onclick="number(8)">8</button></td>
+          <td><button id="num9" onclick="number(9)">9</button></td>
+          <td><button class="operator" id="multiply" onclick="operator('*')">x</button></td>
+        </tr>
+        <tr>
+          <td><button id="num4" onclick="number(4)">4</button></td>
+          <td><button id="num5" onclick="number(5)">5</button></td>
+          <td><button id="num6" onclick="number(6)">6</button></td>
+          <td><button class="operator" id="minus" onclick="operator('-')">-</button></td>
+        </tr>
+        <tr>
+          <td><button id="num1" onclick="number(1)">1</button></td>
+          <td><button id="num2" onclick="number(2)">2</button></td>
+          <td><button id="num3" onclick="number(3)">3</button></td>
+          <td><button class="operator" id="plus" onclick="operator('+')">+</button></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><button id="num0" onclick="number(0)">0</button></td>
+          <td><button id="dot" onclick="operator('.')">.</button></td>
+          <td><button id="calc" onclick="calculate()">=</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    let inputNumber = [];
+    let inputOperator = [];
+    let newCounting = true;
+    let times = 0;
+    let hasil = 0;
+    let inputDisplay = document.getElementById("display");
+    inputDisplay.value = 0;
+    const deleteZero = () => (inputDisplay.value === "0" ? (inputDisplay.value = "") : false);
+    const deleteOperator = () => (inputDisplay.value === "+" || inputDisplay.value === "/" || inputDisplay.value === "*" || inputDisplay.value === "-" ? (inputDisplay.value = "") : false);
+
+    //handle when the number is pressed. It renders the number into #input element
+    function number(number) {
+      if (newCounting == false) {
+        inputDisplay.value = number;
+        newCounting = true;
+      } else {
+        // if (number == 0) {
+        //   times++;
+        //   displayNum.value += number;
+        if (number == 0 && inputDisplay.value == 0) {
+          times++;
+          if (times > 1) {
+            inputDisplay.value += number;
+          }
+        } else {
+          deleteOperator();
+          deleteZero();
+          inputDisplay.value += number;
+          console.log(inputNumber);
+        }
+      }
+    }
+
+    //handle when the Del button, AC button,dot button and other operators (+, /, -, x) are pressed. It renders the operator into #input element
+    function operator(operator) {
+      if (operator == ".") {
+        inputDisplay.value += operator;
+      } else if (operator == "AC") {
+        inputDisplay.value = 0;
+      } else if (operator == "Del") {
+        inputDisplay.value = inputDisplay.value.slice(0, -1);
+        if (inputDisplay.value.length < 1) {
+          inputDisplay.value = 0
+        }
+      } else {
+        inputNumber.push(inputDisplay.value); //number
+        inputDisplay.value = operator; //gantiin sm operator
+        inputNumber.push(operator); //operator
+        console.log(inputNumber);
+      }
+    }
+
+    //   const addition = (operand1, operand2) => operand1 + operand2;
+    //   const subtraction = (operand1, operand2) => operand1 - operand2;
+    //   const multiplication = (operand1, operand2) => operand1 * operand2;
+    //   const division = (operand1, operand2) => operand1 / operand2;
+
+    function count(number) { 
+      let i = 0
+      while (i < number.length) {
+        if (i == 0) { //i ke 0
+          hasil = parseFloat(number[i]); //number pertama yg diinput
+        } else {
+          if (!isNaN(number[i])) {  //yg di input bener2 number ga?
+            switch (number[i - 1]) {
+              case "-":
+                hasil -= parseFloat(number[i]);
+                break;
+              case "+":
+                hasil += parseFloat(number[i]);
+                break;
+              case "*":
+                hasil *= parseFloat(number[i]);
+                break;
+              case "/":
+                hasil /= parseFloat(number[i]);
+                break;
+            }
+          }
+        }
+        i++;
+      }
+      
+      // if (operator === '+') {
+      //   hasil += parseFloat(number[i]);
+      // } else if (operator === '-') {
+      //   hasil -= parseFloat(number[i]);
+      // } else if (operator === '*') {
+      //   hasil *= parseFloat(number[i]);
+      // } else if (operator === '/') {
+      //   hasil /= parseFloat(number[i]);
+      // }
+
+      inputNumber.length = 0;
+      return hasil;
+      newCounting = false;
+    }
+
+    //handle when = button is pressed. It renders the result into #input element
+    function calculate() {
+      inputNumber.push(inputDisplay.value); 
+      inputDisplay.value = count(inputNumber);
+      console.log(inputNumber);
+    }
+
+    
+  </script>
+</body>
+
+</html>
